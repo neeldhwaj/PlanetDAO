@@ -10,10 +10,16 @@ import "./helper_contracts/zeppelin/lifecycle/Killable.sol";
 contract DataStore is Killable {
     uint public count;
 
-    function addNew() {
-        // Invoke this function before adding a new record.
-        // TODO Find if addNew can be called simultaneously. If yes, the below index will not point to correct entry.
+    function increaseCount() {
+        // Invoke this function to increase the counter
+        // For one instance, count will work as subset memberIndex
         count++;
+    }
+
+    function decreaseCount() {
+        // Invoke this function to decrease the counter
+        // Invoke this function before adding a new record.
+        count--;
     }
 
     mapping (uint => mapping (bytes32 => address)) public AddressStorage;
@@ -22,7 +28,6 @@ contract DataStore is Killable {
     // An example Member Data Store:
     // {1: {'name': 'John Doe', 'email': 'john.doe@example.com'}}
     // {2: {'name': 'Johnny Appleseed', 'email': 'johnny.appleseed@icloud.com', 'address': '1, Infinite Loop'}}
-    // Book Data Store: {1: {'title': '1984', 'author': '', 'publisher': '', 'imgUrl': ''}}
 
     function getAddressValue(uint index, bytes32 key) constant returns (address) {
         return AddressStorage[index][key];
@@ -52,7 +57,7 @@ contract DataStore is Killable {
 
     mapping(bytes32 => mapping (address => uint)) AddressIndex;
     mapping(bytes32 => mapping (bytes32 => uint)) Bytes32Index;
-    mapping(bytes32 => mapping (int => uint)) IntIndex;
+    mapping(bytes32 => mapping (uint => uint)) IntIndex;
 
     function getAddressIndex(bytes32 indexName, address key) constant returns (uint) {
         return AddressIndex[indexName][key];
@@ -70,11 +75,11 @@ contract DataStore is Killable {
         Bytes32Index[indexName][key] = index;
     }
 
-    function getIntIndex(bytes32 indexName, int key) constant returns (uint) {
+    function getIntIndex(bytes32 indexName, uint key) constant returns (uint) {
         return IntIndex[indexName][key];
     }
 
-    function setIntIndex(bytes32 indexName, int key, uint index) {
+    function setIntIndex(bytes32 indexName, uint key, uint index) {
         IntIndex[indexName][key] = index;
     }
 }

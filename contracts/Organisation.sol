@@ -1,125 +1,176 @@
-pragma solidity ^0.4.2;
+pragma solidity ^0.4.8;
 
 import "./helper_contracts/strings.sol";
 import "./helper_contracts/StringLib.sol";
-import "./helper_contracts/zeppelin/lifecycle/Killable.sol";
+import "./helper_contracts/zeppelin/ownership/Ownable.sol";
 
-contract Organisation is Killable {
-    
-    enum MemberRole {
-        Owner,
-        Admin,
-        Member
+import "./DataStore.sol";
+// import "./BooksLibrary.sol";
+import "./MembersLibrary.sol";
+
+
+contract Organisation is Ownable {
+    using strings for *;
+    // using BooksLibrary for address;
+    using MembersLibrary for address;
+
+    // Status of transaction. Used for error handling.
+    event Status(uint indexed statusCode);
+
+    address public memberStore;
+    address public projectStore;
+    address public taskStore;
+
+    // modifier onlyMember {
+    //     var index = DataStore(memberStore).getAddressIndex('account', msg.sender);
+    //     var state = DataStore(memberStore).getIntValue(index, 'state');
+    //     if (index != 0 && state == 0) {
+    //         _;
+    //     } else {
+    //         Status(100);
+    //     }
+    // }
+
+    function Organisation() payable {
+        // TODO Check for funds being transferred
+        // The contract could also be funded after instantiation through sendTransaction.
     }
 
-    enum MemberCategory {
-        Project,
-        Task
-    }
-
-    enum TaskStage {
-        ToDo,
-        InProgress,
-        Completed
-    }
-
-    struct Colony {
-        uint colonyID;
-        string colonyName;
-        string colonyDescription;
-        address colonyOwner;
-        mapping (uint => Project) projects;
-        mapping (uint => Member) colonyMembers;
-        uint totalBudget;
-        uint currentAssignedBudget;
-        uint colonyMemberCount;
-    } 
-
-    struct Project {
-        uint projectID;
-        string projectTitle;
-        string projectDescription;
-        address projectOwner;
-        mapping (uint => Member) projectMembers;
-        mapping (uint => Task) tasks;
-        uint projectBudget;
-        uint projectMemberCount;
-        uint dateCreated;
-        uint projectMilestoneDate;
-    }
-
-    struct Task {
-        uint taskID;
-        string taskTitle;
-        string taskDescription;
-        address taskOwner;
-        string tags; // use semi-colon separated tags to store instead of string dynamic arrays restriction is Solidity
-        uint dateCreated;
-        uint budgetAllocated;
-        mapping (uint => Member) taskMembers;
-        uint taskMemberCount;
-        uint taskMilestoneDate;
-        TaskStage taskStage;
-    }
-
-    struct Member {
-        string memberName;
-        address memberAccount;
-        string memberEmail;
-        string memberSkillSet; // use semi-colon separated skill set
-        MemberRole memberRole;
-        uint dateAdded;
-    }
-
-    uint public numColonies;
-    uint public numProjects;
-    uint public numTasks;
-    uint public numTotalMembers;
-
-    mapping (uint => Colony) colonies;                 // index 0 to be kept free since 0 is default value
-    mapping (uint => Member) members;               // index 0 to be kept free since 0 is default value
-    mapping (uint => Project) projects;
-    mapping (uint => Task) tasks;
-    mapping (address => uint) memberIndex;
-    mapping (string => uint) memberEmailIndex;
-    mapping (string => uint) colonyIndex; //colonyname => colonyID mapping
-    mapping (string => uint) projectIndex; //Project title => Project ID
-    mapping (string => uint) taskIndex;
-
-    function createColony(string colonyName, string colonyDescription, uint colonyBudget) {
-        colonies[++numColonies] = Colony(numColonies, colonyName, colonyDescription, msg.sender, colonyBudget, 0, 0);
-        colonyIndex[colonyName] = numColonies;
-
-    }
-
-    function createMember (string name, address account, string email, string skillSet, MemberRole memberRole) {
-        members[++numTotalMembers] = Member(name, account, email, skillSet, memberRole, now);
-        memberIndex[account] = numTotalMembers;
-        memberEmailIndex[email] = numTotalMembers;
-    }
-
-    function createProject (string title, string description, uint budget) {
-        projects[++numProjects] = Project(numProjects, title, description, msg.sender, budget, 0, now, 0);
-        projectIndex[title] = numProjects;
-    }
-
-    function createTask (string title, string description, string tags, uint budget) {
-        tasks[++numTasks] = Task(numTasks, title, description, msg.sender, tags, now, budget, 0, 0, TaskStage.ToDo);
-        taskIndex[title] = numTasks;
-    }
-
-    function assignMembersToProjectOrTask(MemberCategory key, uint ID, address memberAccount) {
-        var index = memberIndex[memberAccount];
-        uint memberCount = 0;
-        if (key == MemberCategory.Project) {
-            memberCount = projects[ID].projectMemberCount++;
-            projects[ID].projectMembers[++memberCount] = members[index];
+    function setDataStore(address _memberStore, address _projectStore, address _taskStore) onlyOwner {
+        if (_memberStore == 0x0) {
+            memberStore = new DataStore();
+        } else {
+            memberStore = _memberStore;
         }
-
-        else if (key == MemberCategory.Task) {
-            memberCount = tasks[ID].taskMemberCount++ ;
-            tasks[ID].taskMembers[++memberCount] = members[index];
+        if (_projectStore == 0x0) {
+            projectStore = new DataStore();
+        } else {
+            projectStore = _projectStore;
+        }
+        if (_taskStore == 0x0) {
+            taskStore = new DataStore();
+        } else {
+            taskStore = _taskStore;
         }
     }
 
+    function getDataStore() constant returns (address, address, address) {
+        return (memberStore, projectStore, taskStore);
+    }
+
+    //////////////////////
+    // Member Functions //
+    //////////////////////
+
+    function memberCount() constant returns (uint) {
+        return memberStore.memberCount();
+    }
+
+    function addMember(address account, uint index) {
+        memberStore.addMember(account, index);
+    }
+
+    function removeMember(address account)  {
+        memberStore.removeMember(account);
+    }
+
+    function getMember(uint index) constant returns (string memberString) {
+        if (index < 1) {
+            return;
+        }
+        var (account, state, dateAdded) = memberStore.getMember(index);
+        if (account == 0x0) {
+            return;
+        }
+        var parts = new strings.slice[](4);
+        parts[0] = StringLib.uintToString(index).toSlice();
+        parts[1] = StringLib.addressToString(account).toSlice();
+        parts[2] = StringLib.uintToString(state).toSlice();
+        parts[3] = StringLib.uintToString(dateAdded).toSlice();
+        memberString = ";".toSlice().join(parts);
+        return memberString;
+    }
+
+    function getAllMembers() constant onlyOwner returns (string memberString, uint8 count) {
+        string memory member;
+        for (uint i = 1; i <= memberStore.memberCount(); i++) {
+            // subset memberIndex key is always stored as "member_account"
+            var index = DataStore(memberStore).getIntIndex('memberIndex', i);
+            member = getMember(index);
+            count++;
+            if (memberString.toSlice().equals("".toSlice())) {
+                memberString = member;
+            } else {
+                memberString = memberString.toSlice().concat('|'.toSlice()).toSlice().concat(member.toSlice());
+            }
+        }
+    }
+
+    ///////////////////////
+    // Project Functions //
+    ///////////////////////
+
+    // function bookCount() constant returns (uint) {
+    //     return memberStore.bookCount();
+    // }
+
+    // function addBook(uint isbn13) public {
+    //     memberStore.addBook(isbn13);
+    // }
+
+    // function getBook(uint id) constant returns (string bookString) {
+    //     if (id < 1 || id > memberStore.bookCount()) {
+    //         return;
+    //     }
+    //     var (i, isbn, state, owner, borrower, dateAdded, dateIssued, totalRating, reviewersCount) = memberStore.getBook(id);
+    //     var parts = new strings.slice[](9);
+    //     parts[0] = StringLib.uintToString(i).toSlice();
+    //     parts[1] = StringLib.uintToString(isbn).toSlice();
+    //     parts[2] = StringLib.uintToString(state).toSlice();
+    //     parts[3] = StringLib.addressToString(owner).toSlice();
+    //     parts[4] = StringLib.addressToString(borrower).toSlice();
+    //     parts[5] = StringLib.uintToString(dateAdded).toSlice();
+    //     parts[6] = StringLib.uintToString(dateIssued).toSlice();
+    //     parts[7] = StringLib.uintToString(totalRating).toSlice();
+    //     parts[8] = StringLib.uintToString(reviewersCount).toSlice();
+    //     bookString = ";".toSlice().join(parts);
+    //     return bookString;
+    // }
+
+    // function getAllBooks() constant returns (string bookString, uint8 count) {
+    //     string memory book;
+    //     for (uint i = 1; i <= memberStore.bookCount(); i++) {
+    //         book = getBook(i);
+    //         count++;
+    //         if (bookString.toSlice().equals("".toSlice())) {
+    //             bookString = book;
+    //         } else {
+    //             bookString = bookString.toSlice().concat('|'.toSlice()).toSlice().concat(book.toSlice());
+    //         }
+    //     }
+    // }
+
+    // function borrowBook(uint id) payable {
+    //     memberStore.borrowBook(id, msg.sender);
+    // }
+
+    // function returnBook(uint id) {
+    //     memberStore.returnBook(id, msg.sender);
+    // }
+
+    // function rateBook(uint id, uint rating, uint oldRating, string comments)  {
+    //     memberStore.rateBook(id, rating, oldRating, comments, msg.sender);
+    // }
+
+
+    // ////////////////////
+    // // Task Functions //
+    // ////////////////////
+
+
+    function kill(address upgradedOrganisation) {
+        DataStore(memberStore).transferOwnership(upgradedOrganisation);
+        DataStore(memberStore).transferOwnership(upgradedOrganisation);
+        selfdestruct(upgradedOrganisation);
+    }
 }
