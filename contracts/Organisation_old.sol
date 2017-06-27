@@ -17,10 +17,22 @@ contract Organisation is Killable {
         Task
     }
 
-    enum TaskStage {
+    enum TaskStatus {
         ToDo,
         InProgress,
-        Completed
+        Completed,
+        Archived
+    }
+
+    enum MemberStatus {
+        Active,
+        Inactive
+    }
+
+    enum ProjectStatus {
+        Active,
+        Completed,
+        Archived
     }
 
     struct Colony {
@@ -42,6 +54,7 @@ contract Organisation is Killable {
         address projectOwner;
         mapping (uint => Member) projectMembers;
         mapping (uint => Task) tasks;
+        uint taskCount;
         uint projectBudget;
         uint projectMemberCount;
         uint dateCreated;
@@ -59,7 +72,7 @@ contract Organisation is Killable {
         mapping (uint => Member) taskMembers;
         uint taskMemberCount;
         uint taskMilestoneDate;
-        TaskStage taskStage;
+        TaskStatus taskStatus;
     }
 
     struct Member {
@@ -99,12 +112,12 @@ contract Organisation is Killable {
     }
 
     function createProject (string title, string description, uint budget) {
-        projects[++numProjects] = Project(numProjects, title, description, msg.sender, budget, 0, now, 0);
+        projects[++numProjects] = Project(numProjects, title, description, msg.sender, 0, budget, 0, now, 0);
         projectIndex[title] = numProjects;
     }
 
     function createTask (string title, string description, string tags, uint budget) {
-        tasks[++numTasks] = Task(numTasks, title, description, msg.sender, tags, now, budget, 0, 0, TaskStage.ToDo);
+        tasks[++numTasks] = Task(numTasks, title, description, msg.sender, tags, now, budget, 0, 0, TaskStatus.ToDo);
         taskIndex[title] = numTasks;
     }
 
