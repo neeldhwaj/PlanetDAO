@@ -5,14 +5,15 @@ import "./helper_contracts/StringLib.sol";
 import "./helper_contracts/zeppelin/ownership/Ownable.sol";
 
 import "./DataStore.sol";
-// import "./BooksLibrary.sol";
 import "./MembersLibrary.sol";
+import "./ProjectsLibrary.sol";
 
 
 contract Organisation is Ownable {
     using strings for *;
     // using BooksLibrary for address;
     using MembersLibrary for address;
+    using ProjectsLibrary for address;
 
     // Status of transaction. Used for error handling.
     event Status(uint indexed statusCode);
@@ -110,13 +111,31 @@ contract Organisation is Ownable {
     // Project Functions //
     ///////////////////////
 
-    // function bookCount() constant returns (uint) {
-    //     return memberStore.bookCount();
-    // }
+    function projectCount() constant returns (uint) {
+        return projectStore.projectCount();
+    }
 
-    // function addBook(uint isbn13) public {
-    //     memberStore.addBook(isbn13);
-    // }
+    function createProject(string projectTitle, string projectDescription, uint projectBudget) public {
+        projectStore.createProject(projectTitle, projectDescription, projectBudget);
+    }
+
+    function getProject(uint projectIndex) constant returns (string projectTitle,
+                        string projectDescription, address projectOwner, uint projectBudget, uint projectMemberCount,
+                        uint projectDateCreated, uint projectMilestoneDate, uint projectStatus) {
+        //return projectStore.getProject(projectIndex);
+    }
+
+    function archiveProject(uint projectIndex) {
+        projectStore.archiveProject(projectIndex);
+    }
+
+    function updateProjectBudget(uint projectIndex, uint projectBudget) {
+        projectStore.updateProjectBudget(projectIndex, projectBudget);
+    }
+
+    function updateProjectDetails(uint projectIndex, string projectTitle, string projectDescription) {
+        projectStore.updateProjectDetails(projectIndex, projectTitle, projectDescription);
+    }
 
     // function getBook(uint id) constant returns (string bookString) {
     //     if (id < 1 || id > memberStore.bookCount()) {
