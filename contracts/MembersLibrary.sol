@@ -45,20 +45,20 @@ library MembersLibrary {
         // }
         memberStore.increaseCount();
         uint memberIndex = memberStore.count();
-        memberStore.setIntValue(index, 'dateAdded', now);
-        memberStore.setIntValue(index, 'state', 0);
+        memberStore.setIntValue(sha3('dateAdded', index), now);
+        memberStore.setIntValue(sha3('state', index), 0);
         // mapping subset memberIndex to superset index
-        memberStore.setIntIndex('memberIndex', memberIndex, index);
-        memberStore.setAddressValue(index, 'account', account);
+        memberStore.setIntIndex(sha3('memberIndex'), memberIndex, index);
+        memberStore.setAddressValue(sha3('account', index), account);
         // memberStore.setAddressIndex('account', account, index);
     }
 
     function removeMember(address memberStoreAddress, address account) {
         var memberStore = DataStore(memberStoreAddress);
         // Deactivate member
-        var accountIndex = memberStore.getAddressIndex('account', account);
+        var accountIndex = memberStore.getAddressIndex(sha3('account'), account);
         if (accountIndex != 0) {
-            memberStore.setIntValue(accountIndex, 'state', 1);
+            memberStore.setIntValue(sha3('state', accountIndex), 1);
             memberStore.decreaseCount();
         }
     }
@@ -68,11 +68,11 @@ library MembersLibrary {
         if (index < 1) {
             return;
         }
-        account = memberStore.getAddressValue(index, 'account');
+        account = memberStore.getAddressValue(sha3('account', index));
         if (account == 0x0) {
             return;
         }
-        state = memberStore.getIntValue(index, 'state');
-        dateAdded = memberStore.getIntValue(index, 'dateAdded');
+        state = memberStore.getIntValue(sha3('state', index));
+        dateAdded = memberStore.getIntValue(sha3('dateAdded', index));
     }
 }
