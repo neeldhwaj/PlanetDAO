@@ -22,37 +22,37 @@ contract DataStore is Killable {
         count--;
     }
 
-    mapping (uint => mapping (bytes32 => address)) public AddressStorage;
-    mapping (uint => mapping (bytes32 => uint)) public IntStorage;
-    mapping (uint => mapping (bytes32 => string)) public StringStorage;
+    mapping (bytes32 => address) public AddressStorage;
+    mapping (bytes32 => uint) public IntStorage;
+    mapping (bytes32 => string) public StringStorage;
     // An example Member Data Store:
     // {1: {'name': 'John Doe', 'email': 'john.doe@example.com'}}
     // {2: {'name': 'Johnny Appleseed', 'email': 'johnny.appleseed@icloud.com', 'address': '1, Infinite Loop'}}
 
-    function getAddressValue(uint index, bytes32 key) constant returns (address) {
-        return AddressStorage[index][key];
+    function getAddressValue(bytes32 key) constant returns (address) {
+        return AddressStorage[key];
     }
 
-    function setAddressValue(uint index, bytes32 key, address value) {
-        AddressStorage[index][key] = value;
+    function setAddressValue(bytes32 key, address value) {
+        AddressStorage[key] = value;
     }
 
-    function getIntValue(uint index, bytes32 key) constant returns (uint) {
-        return IntStorage[index][key];
+    function getIntValue(bytes32 key) constant returns (uint) {
+        return IntStorage[key];
     }
 
-    function setIntValue(uint index, bytes32 key, uint value) {
-        IntStorage[index][key] = value;
+    function setIntValue(bytes32 key, uint value) {
+        IntStorage[key] = value;
     }
 
-    function getStringValue(uint index, bytes32 key) constant returns (string) {
+    function getStringValue(bytes32 key) constant returns (string) {
         // This function cannot be used by other contracts or libraries due to an EVM restriction
         // on contracts reading variable-sized data from other contracts.
-        return StringStorage[index][key];
+        return StringStorage[key];
     }
 
-    function setStringValue(uint index, bytes32 key, string value) {
-        StringStorage[index][key] = value;
+    function setStringValue(bytes32 key, string value) {
+        StringStorage[key] = value;
     }
 
     mapping(bytes32 => mapping (address => uint)) AddressIndex;

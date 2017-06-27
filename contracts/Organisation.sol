@@ -95,7 +95,7 @@ contract Organisation is Ownable {
         string memory member;
         for (uint i = 1; i <= memberStore.memberCount(); i++) {
             // subset memberIndex key is always stored as "member_account"
-            var index = DataStore(memberStore).getIntIndex('memberIndex', i);
+            var index = DataStore(memberStore).getIntIndex(sha3('memberIndex'), i);
             member = getMember(index);
             count++;
             if (memberString.toSlice().equals("".toSlice())) {
