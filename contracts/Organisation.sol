@@ -7,13 +7,14 @@ import "./helper_contracts/zeppelin/ownership/Ownable.sol";
 import "./DataStore.sol";
 import "./MembersLibrary.sol";
 import "./ProjectsLibrary.sol";
-
+import "./TasksLibrary.sol";
 
 contract Organisation is Ownable {
     using strings for *;
     // using BooksLibrary for address;
     using MembersLibrary for address;
     using ProjectsLibrary for address;
+    using TasksLibrary for address;
 
     // Status of transaction. Used for error handling.
     event Status(uint indexed statusCode);

@@ -46,7 +46,8 @@ library MembersLibrary {
         memberStore.increaseCount();
         uint memberIndex = memberStore.count();
         memberStore.setIntValue(sha3('dateAdded', accountIndex), now);
-        memberStore.setIntValue(sha3('state', accountIndex), 0);
+        // // setting state of the member to 0 is not needed as the default value for a uint when it is declared is 0.
+        //memberStore.setIntValue(sha3('state', accountIndex), 0);
         // mapping subset memberIndex to superset index
         memberStore.setIntIndex(sha3('memberIndex'), memberIndex, accountIndex);
         memberStore.setAddressValue(sha3('account', accountIndex), account);
@@ -56,7 +57,7 @@ library MembersLibrary {
     function removeMember(address memberStoreAddress, address account) {
         var memberStore = DataStore(memberStoreAddress);
         // Deactivate member
-        var accountIndex = memberStore.getAddressIndex(sha3('account'), account);
+        var accountIndex = memberStore.getAddressIndex(sha3('accountIndex'), account);
         if (accountIndex != 0) {
             memberStore.setIntValue(sha3('state', accountIndex), 1);
             memberStore.decreaseCount();
@@ -72,7 +73,7 @@ library MembersLibrary {
         if (account == 0x0) {
             return;
         }
-        account = memberStore.getAddressValue(sha3('accountIndex', index));
+        //account = memberStore.getAddressValue(sha3('accountIndex', index));
         state = memberStore.getIntValue(sha3('state', index));
         dateAdded = memberStore.getIntValue(sha3('dateAdded', index));
     }
