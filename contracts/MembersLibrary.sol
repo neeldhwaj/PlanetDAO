@@ -17,9 +17,10 @@ library MembersLibrary {
         return DataStore(memberStoreAddress).count();
     }
 
-    function addMember(address memberStoreAddress, address account, uint index) public {
+
+    function addMember(address memberStoreAddress, address account, uint accountIndex) public {
         var memberStore = DataStore(memberStoreAddress);
-        if (index == 0) {
+        if (accountIndex == 0) {
             Status(100);
         }
         // if (accountIndex == emailIndex && accountIndex != 0) {
@@ -45,12 +46,13 @@ library MembersLibrary {
         // }
         memberStore.increaseCount();
         uint memberIndex = memberStore.count();
-        memberStore.setIntValue(sha3('dateAdded', index), now);
-        memberStore.setIntValue(sha3('state', index), 0);
+
+        memberStore.setIntValue(sha3('dateAdded', accountIndex), now);
+        memberStore.setIntValue(sha3('state', accountIndex), 0);
         // mapping subset memberIndex to superset index
-        memberStore.setIntIndex(sha3('memberIndex'), memberIndex, index);
-        memberStore.setAddressValue(sha3('account', index), account);
-        // memberStore.setAddressIndex('account', account, index);
+        memberStore.setIntIndex(sha3('memberIndex'), memberIndex, accountIndex);
+        memberStore.setAddressValue(sha3('account', accountIndex), account);
+        memberStore.setAddressIndex(sha3('accountIndex'), account, accountIndex);
     }
 
     function removeMember(address memberStoreAddress, address account) {
@@ -72,6 +74,8 @@ library MembersLibrary {
         if (account == 0x0) {
             return;
         }
+
+        account = memberStore.getAddressValue(sha3('accountIndex', index));
         state = memberStore.getIntValue(sha3('state', index));
         dateAdded = memberStore.getIntValue(sha3('dateAdded', index));
     }

@@ -119,6 +119,24 @@ contract Organisation is Ownable {
         projectStore.createProject(projectTitle, projectDescription, projectBudget);
     }
 
+    function getProject(uint projectIndex) constant returns (string projectTitle,
+                        string projectDescription, address projectOwner, uint projectBudget, uint projectMemberCount,
+                        uint projectDateCreated, uint projectMilestoneDate, uint projectStatus) {
+        //return projectStore.getProject(projectIndex);
+    }
+
+    function archiveProject(uint projectIndex) {
+        projectStore.archiveProject(projectIndex);
+    }
+
+    function updateProjectBudget(uint projectIndex, uint projectBudget) {
+        projectStore.updateProjectBudget(projectIndex, projectBudget);
+    }
+
+    function updateProjectDetails(uint projectIndex, string projectTitle, string projectDescription) {
+        projectStore.updateProjectDetails(projectIndex, projectTitle, projectDescription);
+    }
+
     // function getBook(uint id) constant returns (string bookString) {
     //     if (id < 1 || id > memberStore.bookCount()) {
     //         return;
