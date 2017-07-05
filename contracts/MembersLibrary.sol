@@ -17,6 +17,7 @@ library MembersLibrary {
         return DataStore(memberStoreAddress).count();
     }
 
+
     function addMember(address memberStoreAddress, address account, uint accountIndex) public {
         var memberStore = DataStore(memberStoreAddress);
         if (accountIndex == 0) {
@@ -45,6 +46,7 @@ library MembersLibrary {
         // }
         memberStore.increaseCount();
         uint memberIndex = memberStore.count();
+
         memberStore.setIntValue(sha3('dateAdded', accountIndex), now);
         // // setting state of the member to 0 is not needed as the default value for a uint when it is declared is 0.
         //memberStore.setIntValue(sha3('state', accountIndex), 0);
@@ -73,7 +75,9 @@ library MembersLibrary {
         if (account == 0x0) {
             return;
         }
-        //account = memberStore.getAddressValue(sha3('accountIndex', index));
+
+
+        account = memberStore.getAddressValue(sha3('accountIndex', index));
         state = memberStore.getIntValue(sha3('state', index));
         dateAdded = memberStore.getIntValue(sha3('dateAdded', index));
     }

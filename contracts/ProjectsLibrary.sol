@@ -21,10 +21,12 @@ library ProjectsLibrary {
         projectStore.setStringValue(sha3('projectTitle', projectIndex), title);
         projectStore.setStringValue(sha3('projectDescription', projectIndex), description);
         projectStore.setAddressValue(sha3('projectOwner', projectIndex),msg.sender);
+
         projectStore.setIntValue(sha3('projectBudget', projectIndex), budget);
         projectStore.setIntValue(sha3('projectDateCreated', projectIndex), now);
         projectStore.setIntValue(sha3('projectStatus', projectIndex), 0);
     }
+
 
     function getProject(address projectStoreAddress, uint projectIndex) constant returns (address projectOwner, 
                         uint projectBudget, uint projectMemberCount,
@@ -70,6 +72,7 @@ library ProjectsLibrary {
     }
 
 //Update Project budget
+
     function updateProjectBudget(address projectStoreAddress, uint projectIndex, uint projectBudget) {
         var projectStore = DataStore(projectStoreAddress);
 
@@ -94,6 +97,7 @@ library ProjectsLibrary {
     }
 
 //Add milestone to project
+
 
     function addProjectMilestone(address projectStoreAddress, string projectMilestone) {
 
