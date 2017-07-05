@@ -21,30 +21,30 @@ library ProjectsLibrary {
         projectStore.setStringValue(sha3('projectTitle', projectIndex), title);
         projectStore.setStringValue(sha3('projectDescription', projectIndex), description);
         projectStore.setAddressValue(sha3('projectOwner', projectIndex),msg.sender);
-        projectStore.setIntValue(sha3('projectBudet', projectIndex), budget);
+        projectStore.setIntValue(sha3('projectBudget', projectIndex), budget);
         projectStore.setIntValue(sha3('projectDateCreated', projectIndex), now);
         projectStore.setIntValue(sha3('projectStatus', projectIndex), 0);
     }
 
-    function getProject(address projectStoreAddress, uint projectID) constant returns (string projectTitle,
-                        string projectDescription, address projectOwner, uint projectBudet, uint projectMemberCount,
+    function getProject(address projectStoreAddress, uint projectIndex) constant returns (address projectOwner, 
+                        uint projectBudget, uint projectMemberCount,
                         uint projectDateCreated, uint projectMilestoneDate, uint projectStatus) {
 
         var projectStore = DataStore(projectStoreAddress);
-        if (projectID < 1 || projectID > projectStore.count()) {
+        if (projectIndex < 1 || projectIndex > projectStore.count()) {
             return;
         }
 
-        var index = projectID;
+        //var index = projectID;
         // Client/Front-end should get the title and description as getStringValue
-        // projectTitle = projectStore.getStringValue(sha3('projectTitle', index));
-        // projectDescription = projectStore.getStringValue(sha3('projectDescription', index));
-        projectOwner = projectStore.getAddressValue(sha3('projectOwner', index));
-        projectBudet = projectStore.getIntValue(sha3('projectBudet', index));
-        projectMemberCount = projectStore.getIntValue(sha3('projectMemberCount', index));
-        projectDateCreated = projectStore.getIntValue(sha3('projectDateCreated', index));
-        projectMilestoneDate = projectStore.getIntValue(sha3('projectMilestoneDate', index));
-        projectStatus = projectStore.getIntValue(sha3('projectStatus', index));
+        //projectTitle = projectStore.getStringValue(sha3('projectTitle', projectIndex));
+        //projectDescription = projectStore.getStringValue(sha3('projectDescription', projectIndex));
+        projectOwner = projectStore.getAddressValue(sha3('projectOwner', projectIndex));
+        projectBudget = projectStore.getIntValue(sha3('projectBudget', projectIndex));
+        projectMemberCount = projectStore.getIntValue(sha3('projectMemberCount', projectIndex));
+        projectDateCreated = projectStore.getIntValue(sha3('projectDateCreated', projectIndex));
+        projectMilestoneDate = projectStore.getIntValue(sha3('projectMilestoneDate', projectIndex));
+        projectStatus = projectStore.getIntValue(sha3('projectStatus', projectIndex));
     }
 
 //Remove Project
@@ -70,19 +70,33 @@ library ProjectsLibrary {
     }
 
 //Update Project budget
-    function updateProjectBudget(address projectStoreAddress, uint name) {
-        
+    function updateProjectBudget(address projectStoreAddress, uint projectIndex, uint projectBudget) {
+        var projectStore = DataStore(projectStoreAddress);
+
+        if(projectIndex < 1 || projectIndex > projectStore.count()) {
+            return;
+        }
+
+        projectStore.setIntValue(sha3('projectBudget', projectIndex), projectBudget);
+
     }
 
 //Update project title and description
-    function updateProjectDetails(address projectStoreAddress, uint name) {
-        
+    function updateProjectDetails(address projectStoreAddress, uint projectIndex, string projectTitle, string projectDescription) {
+        var projectStore = DataStore(projectStoreAddress);
+
+        if(projectIndex < 1 || projectIndex > projectStore.count()) {
+            return;
+        }
+
+        projectStore.setStringValue(sha3('projectTitle', projectIndex), projectTitle);
+        projectStore.setStringValue(sha3('projectDescription', projectIndex), projectDescription);
     }
 
 //Add milestone to project
 
-    function addProjectMilestone(address projectStoreAddress, uint name) {
-        
+    function addProjectMilestone(address projectStoreAddress, string projectMilestone) {
+
     }
 
 
