@@ -4,6 +4,7 @@ var TasksLibrary = artifacts.require("./TasksLibrary.sol");
 var Organisation = artifacts.require("./Organisation.sol");
 
 module.exports = function(deployer) {
+  deployer.deploy(DataStore);
   deployer.deploy(MembersLibrary);
   deployer.deploy(ProjectsLibrary);
   deployer.deploy(TasksLibrary);
