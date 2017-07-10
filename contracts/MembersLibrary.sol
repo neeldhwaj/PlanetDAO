@@ -17,7 +17,6 @@ library MembersLibrary {
         return DataStore(memberStoreAddress).count();
     }
 
-
     function addMember(address memberStoreAddress, address account, uint accountIndex) public {
         var memberStore = DataStore(memberStoreAddress);
         if (accountIndex == 0) {

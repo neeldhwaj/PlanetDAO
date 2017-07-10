@@ -1,0 +1,5 @@
+node_modules
+contracts/helper_contracts
+contracts/LMS.sol
+contracts/Migrations.sol
+

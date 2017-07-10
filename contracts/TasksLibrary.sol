@@ -28,7 +28,8 @@ library TasksLibrary {
     }
 
     function getTask(address taskStoreAddress, uint taskIndex) constant returns (address taskOwner, uint taskBudget,
-                        uint taskMemberCount, uint taskDateCreated, uint taskMilestoneDate, uint taskStatus) {
+                        uint taskMemberCount, uint taskDateCreated, uint taskMilestoneDate, uint taskStatus) 
+        {
 
         var taskStore = DataStore(taskStoreAddress);
         if (taskIndex < 1 || taskIndex > taskStore.count()) {
@@ -49,7 +50,7 @@ library TasksLibrary {
     function archiveTask(address taskStoreAddress, uint taskIndex) {
         var taskStore = DataStore(taskStoreAddress);
 
-        if(taskIndex < 1 || taskIndex > taskStore.count()) {
+        if (taskIndex < 1 || taskIndex > taskStore.count()) {
             return;
         }
 
@@ -70,7 +71,7 @@ library TasksLibrary {
     function updateTaskBudget(address taskStoreAddress, uint taskIndex, uint taskBudget) {
         var taskStore = DataStore(taskStoreAddress);
 
-        if(taskIndex < 1 || taskIndex > taskStore.count()) {
+        if (taskIndex < 1 || taskIndex > taskStore.count()) {
             return;
         }
 
@@ -81,7 +82,7 @@ library TasksLibrary {
     function updateTaskDetails(address taskStoreAddress, uint taskIndex, string taskTitle, string taskDescription) {
         var taskStore = DataStore(taskStoreAddress);
 
-        if(taskIndex < 1 || taskIndex > taskStore.count()) {
+        if (taskIndex < 1 || taskIndex > taskStore.count()) {
             return;
         }
 
