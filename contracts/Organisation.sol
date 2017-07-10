@@ -9,6 +9,7 @@ import "./MembersLibrary.sol";
 import "./ProjectsLibrary.sol";
 import "./TasksLibrary.sol";
 
+
 contract Organisation is Ownable {
     using strings for *;
     // using BooksLibrary for address;
@@ -72,7 +73,7 @@ contract Organisation is Ownable {
         memberStore.addMember(account, index);
     }
 
-    function removeMember(address account)  {
+    function removeMember(address account) {
         memberStore.removeMember(account);
     }
 
@@ -122,7 +123,8 @@ contract Organisation is Ownable {
 
     function getProject(uint projectIndex) constant returns (string projectTitle,
                         string projectDescription, address projectOwner, uint projectBudget, uint projectMemberCount,
-                        uint projectDateCreated, uint projectMilestoneDate, uint projectStatus) {
+                        uint projectDateCreated, uint projectMilestoneDate, uint projectStatus) 
+    {
         //return projectStore.getProject(projectIndex);
     }
 

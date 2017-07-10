@@ -27,10 +27,10 @@ library ProjectsLibrary {
         projectStore.setIntValue(sha3('projectStatus', projectIndex), 0);
     }
 
-
     function getProject(address projectStoreAddress, uint projectIndex) constant returns (address projectOwner, 
                         uint projectBudget, uint projectMemberCount,
-                        uint projectDateCreated, uint projectMilestoneDate, uint projectStatus) {
+                        uint projectDateCreated, uint projectMilestoneDate, uint projectStatus) 
+        {
 
         var projectStore = DataStore(projectStoreAddress);
         if (projectIndex < 1 || projectIndex > projectStore.count()) {
@@ -53,7 +53,7 @@ library ProjectsLibrary {
     function archiveProject(address projectStoreAddress, uint projectIndex) {
         var projectStore = DataStore(projectStoreAddress);
 
-        if(projectIndex < 1 || projectIndex > projectStore.count()) {
+        if (projectIndex < 1 || projectIndex > projectStore.count()) {
             return;
         }
 
@@ -76,7 +76,7 @@ library ProjectsLibrary {
     function updateProjectBudget(address projectStoreAddress, uint projectIndex, uint projectBudget) {
         var projectStore = DataStore(projectStoreAddress);
 
-        if(projectIndex < 1 || projectIndex > projectStore.count()) {
+        if (projectIndex < 1 || projectIndex > projectStore.count()) {
             return;
         }
 
@@ -88,7 +88,7 @@ library ProjectsLibrary {
     function updateProjectDetails(address projectStoreAddress, uint projectIndex, string projectTitle, string projectDescription) {
         var projectStore = DataStore(projectStoreAddress);
 
-        if(projectIndex < 1 || projectIndex > projectStore.count()) {
+        if (projectIndex < 1 || projectIndex > projectStore.count()) {
             return;
         }
 
@@ -98,11 +98,9 @@ library ProjectsLibrary {
 
 //Add milestone to project
 
-
     function addProjectMilestone(address projectStoreAddress, string projectMilestone) {
 
     }
-
 
     // function borrowBook(address bookStoreAddress, uint id) {
     //     var bookStore = DataStore(bookStoreAddress);

@@ -24,7 +24,7 @@ contract('Organisation', function(accounts) {
     });
 
     describe('addMember', function() {
-        it('should add the member', async function() {
+        it.skip('should add the member', async function() {
             await org.addMember(accounts[0], 1);
             let count = await org.memberCount();
             assert.equal(count.valueOf(), 1);
@@ -36,18 +36,10 @@ contract('Organisation', function(accounts) {
             assert.isAtMost(attr[3], Math.floor(Date.now() / 1000));
             assert.isAbove(attr[3], Math.floor(Date.now() / 1000) - 300);       
         });
-        // it('should not add the member again', async function() {
-        //     await org.addMember(accounts[0], 1);
-        //     let count = await org.memberCount();
-        //     assert.equal(count.valueOf(), 1);
-
-        //     let res = await org.addMember(accounts[0], 1);
-        //     assert.equal(res.logs[0].args.statusCode.c[0], 102);
-        // });
     });
 
     describe('removeMember', function() {
-        it('should deactivate the member', async function() {
+        it.skip('should deactivate the member', async function() {
             await org.addMember(accounts[0], 1);
             await org.removeMember(accounts[0]);
             let count = await org.memberCount();
@@ -63,7 +55,7 @@ contract('Organisation', function(accounts) {
     });
 
     describe('getAllMembers', function() {
-        it('should provide details of all members', async function() {
+        it.skip('should provide details of all members', async function() {
             let info = [
                 {index: 1},
                 {index: 2},

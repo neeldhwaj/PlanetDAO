@@ -7,6 +7,7 @@ pragma solidity ^0.4.0;
 
 import "./helper_contracts/zeppelin/lifecycle/Killable.sol";
 
+
 contract DataStore is Killable {
     uint public count;
 
