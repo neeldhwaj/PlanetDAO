@@ -1,0 +1,16 @@
+dist: trusty
+sudo: false
+group: beta
+language: node_js
+node_js:
+- '6'
+before_install:
+- npm install truffle@3.2.5 -g
+- npm i -g ethereumjs-testrpc
+- npm install -g solium
+- npm install
+script:
+- solium --dir contracts
+- testrpc > /dev/null &
+- truffle compile
+- truffle test
