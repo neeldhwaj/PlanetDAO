@@ -26,6 +26,7 @@ contract DataStore is Killable {
     mapping (bytes32 => address) public AddressStorage;
     mapping (bytes32 => uint) public IntStorage;
     mapping (bytes32 => string) public StringStorage;
+    mapping (bytes32 => bytes32) public Bytes32Storage;
     // An example Member Data Store:
     // {1: {'name': 'John Doe', 'email': 'john.doe@example.com'}}
     // {2: {'name': 'Johnny Appleseed', 'email': 'johnny.appleseed@icloud.com', 'address': '1, Infinite Loop'}}
@@ -44,6 +45,14 @@ contract DataStore is Killable {
 
     function setIntValue(bytes32 key, uint value) {
         IntStorage[key] = value;
+    }
+
+    function getBytes32Value(bytes32 key) constant returns (bytes32) {
+        return Bytes32Storage[key];
+    }
+
+    function setBytes32Value(bytes32 key, bytes32 value) {
+        Bytes32Storage[key] = value;
     }
 
     function getStringValue(bytes32 key) constant returns (string) {
