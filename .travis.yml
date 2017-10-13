@@ -5,9 +5,9 @@ language: node_js
 node_js:
 - '6'
 before_install:
-- npm install truffle@3.2.5 -g
-- npm i -g ethereumjs-testrpc
-- npm install -g solium
+- npm install truffle@3.4.9 -g
+- npm i -g ethereumjs-testrpc@4.1.0
+- npm install -g solium@0.5.5
 - npm install
 script:
 - solium --dir contracts
