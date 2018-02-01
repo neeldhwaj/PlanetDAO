@@ -35,11 +35,11 @@ contract Organisation is Ownable {
     } */
 
     // constructor
-    function Organisation() public payable {
+    /* function Organisation() public payable {
         // TODO Check for funds being transferred
         // The contract could also be funded after instantiation through sendTransaction.
     }
-
+    */
     function setDataStore(address _memberStore, address _projectStore, address _taskStore) public onlyOwner {
         if (_memberStore == 0x0) {
             memberStore = new DataStore();
@@ -120,12 +120,13 @@ contract Organisation is Ownable {
         projectStore.createProject(projectTitle, projectDescription, projectBudget);
     }
 
-    function getProject(uint projectIndex) public pure returns (string projectTitle,
+    /* function getProject(uint projectIndex) public returns (string projectTitle,
                         string projectDescription, address projectOwner, uint projectBudget, uint projectMemberCount,
-                        uint projectDateCreated, uint projectMilestoneDate, uint projectStatus) {
+                        uint projectDateCreated, uint projectMilestoneDate, uint projectStatus)
+    {
         //return projectStore.getProject(projectIndex);
     }
-
+    */
     function archiveProject(uint projectIndex) public {
         projectStore.archiveProject(projectIndex);
     }
@@ -137,6 +138,7 @@ contract Organisation is Ownable {
     function updateProjectDetails(uint projectIndex, string projectTitle, string projectDescription) public {
         projectStore.updateProjectDetails(projectIndex, projectTitle, projectDescription);
     }
+
     // function getBook(uint id) public constant returns (string bookString) {
     //     if (id < 1 || id > memberStore.bookCount()) {
     //         return;
@@ -181,7 +183,6 @@ contract Organisation is Ownable {
     // function rateBook(uint id, uint rating, uint oldRating, string comments) public  {
     //     memberStore.rateBook(id, rating, oldRating, comments, msg.sender);
     // }
-
     ////////////////////
     // Task Functions //
     ////////////////////
