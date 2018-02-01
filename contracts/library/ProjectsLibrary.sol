@@ -60,16 +60,16 @@ library ProjectsLibrary {
         projectStore.setIntValue(keccak256("projectStatus", projectIndex), 2);
 
     }
-
+/*
 //Add members to Project
-    function addMemberToProject(address projectStoreAddress, uint name) public pure {
+    function addMemberToProject(address projectStoreAddress, uint name) public {
 
     }
 
 //Remove members from Project
-    function removeMemberFromProject(address projectStoreAddress, uint name) public pure {
+    function removeMemberFromProject(address projectStoreAddress, uint name) public {
 
-    }
+    } */
 
 //Update Project budget
     function updateProjectBudget(address projectStoreAddress, uint projectIndex, uint projectBudget) public {

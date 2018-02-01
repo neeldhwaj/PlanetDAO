@@ -64,7 +64,7 @@ library TasksLibrary {
 
         taskStore.setIntValue(keccak256("taskStatus", taskIndex), 3);
     }
-
+/*
 //Add members to Project
     function addMemberToTask(address taskStoreAddress, uint name) public pure {
 
@@ -73,7 +73,7 @@ library TasksLibrary {
 //Remove members from Project
     function removeMemberFromTask(address taskStoreAddress, uint name) public pure {
 
-    }
+    } */
 
 //Update Task budget
     function updateTaskBudget(address taskStoreAddress, uint taskIndex, uint taskBudget) public {
@@ -88,7 +88,8 @@ library TasksLibrary {
 
 //Update project title and description
     function updateTaskDetails(address taskStoreAddress, uint taskIndex, string taskTitle, string taskDescription)
-    public {
+    public
+    {
         var taskStore = DataStore(taskStoreAddress);
 
         if (taskIndex < 1 || taskIndex > taskStore.count()) {

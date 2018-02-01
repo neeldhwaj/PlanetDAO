@@ -5,10 +5,10 @@
 
 pragma solidity 0.4.18;
 
-import "./helper_contracts/zeppelin/lifecycle/Killable.sol";
+import "./helper_contracts/zeppelin/lifecycle/Destructible.sol";
 
 
-contract DataStore is Killable {
+contract DataStore is Destructible {
     uint public count;
 
     function increaseCount() public {
