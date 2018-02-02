@@ -1,13 +1,13 @@
-pragma solidity ^0.4.8;
+pragma solidity 0.4.18;
 
 import "./helper_contracts/strings.sol";
 import "./helper_contracts/StringLib.sol";
 import "./helper_contracts/zeppelin/ownership/Ownable.sol";
 
 import "./DataStore.sol";
-import "./MembersLibrary.sol";
-import "./ProjectsLibrary.sol";
-import "./TasksLibrary.sol";
+import "./library/MembersLibrary.sol";
+import "./library/ProjectsLibrary.sol";
+import "./library/TasksLibrary.sol";
 
 
 contract Organisation is Ownable {
@@ -23,23 +23,24 @@ contract Organisation is Ownable {
     address public memberStore;
     address public projectStore;
     address public taskStore;
+/*
+     modifier onlyMember {
+         var index = DataStore(memberStore).getAddressIndex("account", msg.sender);
+         var state = DataStore(memberStore).getIntValue(index, "state");
+         if (index != 0 && state == 0) {
+             _;
+         } else {
+             Status(100);
+         }
+    } */
 
-    // modifier onlyMember {
-    //     var index = DataStore(memberStore).getAddressIndex('account', msg.sender);
-    //     var state = DataStore(memberStore).getIntValue(index, 'state');
-    //     if (index != 0 && state == 0) {
-    //         _;
-    //     } else {
-    //         Status(100);
-    //     }
-    // }
-
-    function Organisation() payable {
+    // constructor
+    /* function Organisation() public payable {
         // TODO Check for funds being transferred
         // The contract could also be funded after instantiation through sendTransaction.
     }
-
-    function setDataStore(address _memberStore, address _projectStore, address _taskStore) onlyOwner {
+    */
+    function setDataStore(address _memberStore, address _projectStore, address _taskStore) public onlyOwner {
         if (_memberStore == 0x0) {
             memberStore = new DataStore();
         } else {
@@ -57,33 +58,32 @@ contract Organisation is Ownable {
         }
     }
 
-    function getDataStore() constant returns (address, address, address) {
+    function getDataStore() public constant returns (address, address, address) {
         return (memberStore, projectStore, taskStore);
     }
 
     //////////////////////
     // Member Functions //
     //////////////////////
-
-    function memberCount() constant returns (uint) {
+    function memberCount() public constant returns (uint) {
         return memberStore.memberCount();
     }
 
-    function addMember(address account, uint index) {
+    function addMember(address account, uint index) public {
         memberStore.addMember(account, index);
     }
 
-    function removeMember(address account) {
+    function removeMember(address account) public {
         memberStore.removeMember(account);
     }
 
-    function getMember(uint index) constant returns (string memberString) {
+    function getMember(uint index) public constant returns (string memberString) {
         if (index < 1) {
-            return;
+            return "invalid index";
         }
         var (account, state, dateAdded) = memberStore.getMember(index);
         if (account == 0x0) {
-            return;
+            return "index not present";
         }
         var parts = new strings.slice[](4);
         parts[0] = StringLib.uintToString(index).toSlice();
@@ -94,17 +94,17 @@ contract Organisation is Ownable {
         return memberString;
     }
 
-    function getAllMembers() constant onlyOwner returns (string memberString, uint8 count) {
+    function getAllMembers() public constant onlyOwner returns (string memberString, uint8 count) {
         string memory member;
         for (uint i = 1; i <= memberStore.memberCount(); i++) {
             // subset memberIndex key is always stored as "member_account"
-            var index = DataStore(memberStore).getIntIndex(sha3('memberIndex'), i);
+            var index = DataStore(memberStore).getIntIndex(keccak256("memberIndex"), i);
             member = getMember(index);
             count++;
             if (memberString.toSlice().equals("".toSlice())) {
                 memberString = member;
             } else {
-                memberString = memberString.toSlice().concat('|'.toSlice()).toSlice().concat(member.toSlice());
+                memberString = memberString.toSlice().concat("|".toSlice()).toSlice().concat(member.toSlice());
             }
         }
     }
@@ -112,8 +112,7 @@ contract Organisation is Ownable {
     ///////////////////////
     // Project Functions //
     ///////////////////////
-
-    function projectCount() constant returns (uint) {
+    function projectCount() public constant returns (uint) {
         return projectStore.projectCount();
     }
 
@@ -121,30 +120,31 @@ contract Organisation is Ownable {
         projectStore.createProject(projectTitle, projectDescription, projectBudget);
     }
 
-    function getProject(uint projectIndex) constant returns (string projectTitle,
+    /* function getProject(uint projectIndex) public returns (string projectTitle,
                         string projectDescription, address projectOwner, uint projectBudget, uint projectMemberCount,
-                        uint projectDateCreated, uint projectMilestoneDate, uint projectStatus) 
+                        uint projectDateCreated, uint projectMilestoneDate, uint projectStatus)
     {
         //return projectStore.getProject(projectIndex);
     }
-
-    function archiveProject(uint projectIndex) {
+    */
+    function archiveProject(uint projectIndex) public {
         projectStore.archiveProject(projectIndex);
     }
 
-    function updateProjectBudget(uint projectIndex, uint projectBudget) {
+    function updateProjectBudget(uint projectIndex, uint projectBudget) public {
         projectStore.updateProjectBudget(projectIndex, projectBudget);
     }
 
-    function updateProjectDetails(uint projectIndex, string projectTitle, string projectDescription) {
+    function updateProjectDetails(uint projectIndex, string projectTitle, string projectDescription) public {
         projectStore.updateProjectDetails(projectIndex, projectTitle, projectDescription);
     }
 
-    // function getBook(uint id) constant returns (string bookString) {
+    // function getBook(uint id) public constant returns (string bookString) {
     //     if (id < 1 || id > memberStore.bookCount()) {
     //         return;
     //     }
-    //     var (i, isbn, state, owner, borrower, dateAdded, dateIssued, totalRating, reviewersCount) = memberStore.getBook(id);
+    //     var (i, isbn, state, owner, borrower, dateAdded, dateIssued, totalRating, reviewersCount) =
+    //     memberStore.getBook(id);
     //     var parts = new strings.slice[](9);
     //     parts[0] = StringLib.uintToString(i).toSlice();
     //     parts[1] = StringLib.uintToString(isbn).toSlice();
@@ -158,8 +158,8 @@ contract Organisation is Ownable {
     //     bookString = ";".toSlice().join(parts);
     //     return bookString;
     // }
-
-    // function getAllBooks() constant returns (string bookString, uint8 count) {
+    //
+    // function getAllBooks() public constant returns (string bookString, uint8 count) {
     //     string memory book;
     //     for (uint i = 1; i <= memberStore.bookCount(); i++) {
     //         book = getBook(i);
@@ -167,30 +167,26 @@ contract Organisation is Ownable {
     //         if (bookString.toSlice().equals("".toSlice())) {
     //             bookString = book;
     //         } else {
-    //             bookString = bookString.toSlice().concat('|'.toSlice()).toSlice().concat(book.toSlice());
+    //             bookString = bookString.toSlice().concat("|".toSlice()).toSlice().concat(book.toSlice());
     //         }
     //     }
     // }
-
-    // function borrowBook(uint id) payable {
+    //
+    // function borrowBook(uint id) public payable {
     //     memberStore.borrowBook(id, msg.sender);
     // }
-
-    // function returnBook(uint id) {
+    //
+    // function returnBook(uint id) public {
     //     memberStore.returnBook(id, msg.sender);
     // }
-
-    // function rateBook(uint id, uint rating, uint oldRating, string comments)  {
+    //
+    // function rateBook(uint id, uint rating, uint oldRating, string comments) public  {
     //     memberStore.rateBook(id, rating, oldRating, comments, msg.sender);
     // }
-
-
-    // ////////////////////
-    // // Task Functions //
-    // ////////////////////
-
-
-    function kill(address upgradedOrganisation) {
+    ////////////////////
+    // Task Functions //
+    ////////////////////
+    function kill(address upgradedOrganisation) public {
         DataStore(memberStore).transferOwnership(upgradedOrganisation);
         DataStore(memberStore).transferOwnership(upgradedOrganisation);
         selfdestruct(upgradedOrganisation);
